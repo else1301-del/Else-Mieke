@@ -77,34 +77,29 @@
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "monaco-editor/": "https://esm.sh/monaco-editor@^0.55.1/",
+    "react/": "https://esm.sh/react@^19.2.3/",
     "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
     "vite": "https://esm.sh/vite@^7.3.1",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-    "vite-plugin-monaco-editor": "https://esm.sh/vite-plugin-monaco-editor@^1.1.0"
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
 </head>
 <body class="text-white">
     <div class="geometric-bg">
-        <!-- SVG ZigZags and Triangles -->
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
                 <circle cx="2" cy="2" r="1" fill="#c4d600" opacity="0.3"/>
             </pattern>
             <rect width="100%" height="100%" fill="url(#dots)" />
-            
             <path d="M-50,100 L0,50 L50,100 L100,50 L150,100" fill="none" stroke="#c4d600" stroke-width="10" transform="translate(100,200) rotate(-15)"/>
-            <path d="M-50,100 L0,50 L50,100 L100,50 L150,100" fill="none" stroke="#4aa8ff" stroke-width="5" transform="translate(120,220) rotate(-15)"/>
-            
-            <!-- Fixed percentage transforms using CSS style property -->
             <polygon points="0,0 100,0 50,86" fill="none" stroke="#c4d600" stroke-width="2" style="transform: translate(80%, 10%) rotate(45deg); transform-box: view-box;" />
-            <rect width="80" height="80" fill="none" stroke="#4aa8ff" stroke-width="4" style="transform: translate(10%, 70%) rotate(20deg); transform-box: view-box;" />
         </svg>
     </div>
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>
