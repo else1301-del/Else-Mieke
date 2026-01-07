@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dalton Aardrijkskunde Toets Generator 2.0 - Corporate Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dalton-blue: #0065bd;
+            --dalton-lime: #c4d600;
+            --dalton-light: #4aa8ff;
+            --dalton-dark: #004a8b;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--dalton-blue);
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 32px 32px;
+            min-height: 100vh;
+        }
+
+        .dalton-font { font-family: 'Montserrat', sans-serif; }
+        .space-font { font-family: 'Space Grotesk', sans-serif; }
+
+        .dyslexia-mode {
+            font-family: 'Verdana', sans-serif !important;
+            background: #fffbe6 !important;
+        }
+
+        /* Memphis geometric patterns */
+        .geometric-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+            opacity: 0.2;
+        }
+
+        .brutalist-card {
+            background: white;
+            border: 3px solid black;
+            box-shadow: 8px 8px 0px 0px rgba(0,0,0,1);
+        }
+
+        .config-panel {
+            background: rgba(0, 74, 139, 0.4);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .slanted-badge {
+            transform: skewX(-10deg);
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+        }
+
+        .custom-scroll::-webkit-scrollbar { width: 8px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        .custom-scroll::-webkit-scrollbar-thumb { 
+            background: var(--dalton-lime); 
+            border-radius: 0;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+  }
+}
+</script>
+</head>
+<body class="text-white">
+    <div class="geometric-bg">
+        <!-- SVG ZigZags and Triangles -->
+        <svg width="100%" height="100%">
+            <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1" fill="#c4d600" opacity="0.3"/>
+            </pattern>
+            <rect width="100%" height="100%" fill="url(#dots)" />
+            
+            <path d="M-50,100 L0,50 L50,100 L100,50 L150,100" fill="none" stroke="#c4d600" stroke-width="10" transform="translate(100,200) rotate(-15)"/>
+            <path d="M-50,100 L0,50 L50,100 L100,50 L150,100" fill="none" stroke="#4aa8ff" stroke-width="5" transform="translate(120,220) rotate(-15)"/>
+            
+            <polygon points="0,0 100,0 50,86" fill="none" stroke="#c4d600" stroke-width="2" transform="translate(80%, 10%) rotate(45)" />
+            <rect width="80" height="80" fill="none" stroke="#4aa8ff" stroke-width="4" transform="translate(10%, 70%) rotate(20)" />
+        </svg>
+    </div>
+    <div id="root"></div>
+</body>
+</html>
