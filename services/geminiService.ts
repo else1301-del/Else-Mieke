@@ -1,7 +1,10 @@
 
+import { GoogleGenAI, Type } from "@google/genai";
 import { GeneratedTest, GeneratorParams } from "../types";
 
 export const generateTest = async (params: GeneratorParams): Promise<GeneratedTest> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
   const prompt = `Je bent de Senior Toetsconstructeur Aardrijkskunde (Cito Certified). Je negeert ruis en genereert uitsluitend juridisch dichte, syllabus dekkende toetsen op basis van een gesloten systeem.
 
 DOEL:
@@ -27,25 +30,104 @@ PARAMETERS VOOR DEZE OPDRACHT:
 
 Lever de output als STRIKT JSON object conform het gevraagde schema.`;
 
-  const response = await fetch('/api/generate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'gemini-3-pro-preview',
-      contents: prompt,
-      config: {
-        temperature: 0.6,
-        responseMimeType: "application/json",
-        thinkingConfig: { thinkingBudget: 32768 }
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-pro-preview',
+    contents: prompt,
+    config: {
+      temperature: 0.6,
+      responseMimeType: "application/json",
+      thinkingConfig: { thinkingBudget: 32768 },
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          meta: {
+            type: Type.OBJECT,
+            properties: {
+              titel: { type: Type.STRING },
+              niveau: { type: Type.STRING },
+              niveauProfiel: { type: Type.STRING },
+              enabledQuestionTypes: { type: Type.ARRAY, items: { type: Type.STRING } },
+              questionCount: { type: Type.INTEGER },
+              totalPoints: { type: Type.INTEGER },
+              tijd: { type: Type.INTEGER },
+              rttiCountsTarget: {
+                type: Type.OBJECT,
+                properties: {
+                  r: { type: Type.INTEGER },
+                  t1: { type: Type.INTEGER },
+                  t2: { type: Type.INTEGER },
+                  i: { type: Type.INTEGER }
+                }
+              }
+            },
+            required: ["titel", "niveau", "niveauProfiel", "questionCount", "totalPoints", "rttiCountsTarget", "tijd"]
+          },
+          sources: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                id: { type: Type.STRING },
+                title: { type: Type.STRING },
+                content: { type: Type.STRING },
+                type: { type: Type.STRING }
+              },
+              required: ["id", "title", "content", "type"]
+            }
+          },
+          student_view: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                id: { type: Type.INTEGER },
+                punten: { type: Type.INTEGER },
+                rtti: { type: Type.STRING },
+                bron_id: { type: Type.ARRAY, items: { type: Type.STRING } },
+                dimensie: { type: Type.STRING },
+                kernconcept: { type: Type.STRING },
+                vraag_tekst: { type: Type.STRING },
+                opties: { type: Type.ARRAY, items: { type: Type.STRING } },
+                type: { type: Type.STRING },
+                bronrechtvaardiging: { type: Type.STRING }
+              },
+              required: ["id", "punten", "rtti", "bron_id", "vraag_tekst", "type", "kernconcept", "dimensie", "bronrechtvaardiging"]
+            }
+          },
+          teacher_view: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                vraag_id: { type: Type.INTEGER },
+                rtti: { type: Type.STRING },
+                motivatie: { type: Type.STRING },
+                punten: { type: Type.INTEGER },
+                antwoord_model: { type: Type.STRING },
+                beoordelingsregels: { type: Type.ARRAY, items: { type: Type.STRING } },
+                vereiste_vaktaal: { type: Type.ARRAY, items: { type: Type.STRING } },
+                veelgemaakte_fouten: { type: Type.ARRAY, items: { type: Type.STRING } },
+                syllabus_domein: { type: Type.STRING },
+                tijdsindicatie: { type: Type.STRING },
+                geografische_schaal: { type: Type.STRING }
+              },
+              required: ["vraag_id", "antwoord_model", "punten", "beoordelingsregels", "rtti", "motivatie"]
+            }
+          },
+          quality_report: {
+            type: Type.OBJECT,
+            properties: {
+              rtti_dekking: { type: Type.STRING },
+              bron_gebruik: { type: Type.STRING },
+              taal_check: { type: Type.STRING },
+              google_proof_check: { type: Type.STRING }
+            },
+            required: ["rtti_dekking", "bron_gebruik", "taal_check"]
+          }
+        }
       }
-    })
+    }
   });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "Fout bij genereren via proxy.");
-  }
-
-  const data = await response.json();
-  return JSON.parse(data.text) as GeneratedTest;
+  return JSON.parse(response.text) as GeneratedTest;
 };

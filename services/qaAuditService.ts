@@ -1,7 +1,10 @@
 
+import { GoogleGenAI } from "@google/genai";
 import { GeneratedTest, QAAuditReport, RTTITarget } from "../types";
 
 export const auditTest = async (test: GeneratedTest, targetRTTI: RTTITarget): Promise<QAAuditReport> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
   const prompt = `Je bent Senior toetsconstructeur. Voer een audit uit op deze toets.
   
   TOETS: ${JSON.stringify(test)}
@@ -9,25 +12,15 @@ export const auditTest = async (test: GeneratedTest, targetRTTI: RTTITarget): Pr
 
   🛑 REGELS: GEEN KOPPELTEKENS. GESLOTEN SYSTEEM.`;
 
-  const response = await fetch('/api/generate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'gemini-3-pro-preview',
-      contents: prompt,
-      config: {
-        temperature: 0.2,
-        responseMimeType: "application/json",
-        thinkingConfig: { thinkingBudget: 16000 }
-      }
-    })
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-pro-preview',
+    contents: prompt,
+    config: {
+      temperature: 0.2,
+      responseMimeType: "application/json",
+      thinkingConfig: { thinkingBudget: 16000 }
+    }
   });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "Audit mislukt via proxy.");
-  }
-
-  const data = await response.json();
-  return JSON.parse(data.text) as QAAuditReport;
+  return JSON.parse(response.text) as QAAuditReport;
 };

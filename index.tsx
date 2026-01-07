@@ -1,11 +1,21 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-// Global configuration for Monaco Editor workers in a Vite environment
-// vite-plugin-monaco-editor handles the heavy lifting, but we ensure the environment is ready.
+// Setup Monaco Environment for worker loading
 if (typeof window !== 'undefined') {
-  (window as any).MonacoEnvironment = (window as any).MonacoEnvironment || {};
+  (window as any).MonacoEnvironment = {
+    getWorkerUrl: function (_moduleId: any, label: string) {
+      if (label === 'json') {
+        return './monacoeditorwork/json.worker.bundle.js';
+      }
+      if (label === 'typescript' || label === 'javascript') {
+        return './monacoeditorwork/ts.worker.bundle.js';
+      }
+      return './monacoeditorwork/editor.worker.bundle.js';
+    }
+  };
 }
 
 const rootElement = document.getElementById('root');
